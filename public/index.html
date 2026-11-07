@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>الحَد</title>
+<meta name="theme-color" content="#1f5c7a">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1 data-i18n="title"></h1>
+  <div class="tools">
+    <select id="lang" aria-label="language"><option value="ar">العربية</option><option value="en">English</option><option value="fr">Français</option></select>
+    <button id="bTheme" aria-label="theme">◐</button>
+    <button id="bSfx" aria-label="sfx">🔊</button>
+    <button id="bMusic" aria-label="music">🎵</button>
+    <button id="bHelp" aria-label="help">?</button>
+  </div>
+</header>
+<main>
+  <section id="menu">
+    <input id="name" maxlength="16" data-i18n-ph="name" autocomplete="off">
+    <button class="big" id="mLocal" data-i18n="local"></button>
+    <div class="row">
+      <button class="big" id="mBot" data-i18n="bot"></button>
+      <select id="pick"><option value="1" data-i18n="date"></option><option value="2" data-i18n="pebble"></option></select>
+    </div>
+    <button class="big acc" id="mRank" data-i18n="ranked"></button>
+    <button class="big" id="mCreate" data-i18n="create"></button>
+    <div class="row">
+      <input id="code" maxlength="4" data-i18n-ph="code" autocomplete="off">
+      <button class="big" id="mJoin" data-i18n="join"></button>
+    </div>
+    <button class="big" id="mLb" data-i18n="lb"></button>
+  </section>
+
+  <section id="game" hidden>
+    <div class="clock" id="ctop"><span class="who"></span><b>1:00</b></div>
+    <div class="board" id="board">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><g stroke="currentColor" stroke-width="1.2" fill="none">
+        <path d="M16.67 16.67H83.33M16.67 50H83.33M16.67 83.33H83.33M16.67 16.67V83.33M50 16.67V83.33M83.33 16.67V83.33M16.67 16.67L83.33 83.33M83.33 16.67L16.67 83.33"/></g></svg>
+    </div>
+    <div class="clock" id="cbot"><span class="who"></span><b>1:00</b></div>
+    <p id="status"></p>
+    <div class="row"><button id="gResign" data-i18n="resign"></button><button id="gMenu" data-i18n="menu"></button></div>
+  </section>
+
+  <section id="lbox" hidden>
+    <h2 data-i18n="lb"></h2><ol id="lbList"></ol>
+    <button class="big" data-back data-i18n="menu"></button>
+  </section>
+
+  <section id="wait" hidden>
+    <p id="waitMsg"></p><button class="big" id="wCancel" data-i18n="cancel"></button>
+  </section>
+</main>
+
+<div class="modal" id="mHelp" hidden><div class="card">
+  <h2 data-i18n="help"></h2>
+  <svg viewBox="0 0 100 100" class="mini"><g stroke="currentColor" stroke-width="1.2" fill="none"><path d="M16.67 16.67H83.33M16.67 50H83.33M16.67 83.33H83.33M16.67 16.67V83.33M50 16.67V83.33M83.33 16.67V83.33M16.67 16.67L83.33 83.33M83.33 16.67L16.67 83.33"/></g>
+  <g fill="#d9dde0" stroke="#777"><circle cx="16.67" cy="16.67" r="7"/><circle cx="50" cy="16.67" r="7"/><circle cx="83.33" cy="16.67" r="7"/></g>
+  <g fill="#6b3f1d"><ellipse cx="16.67" cy="83.33" rx="6" ry="8"/><ellipse cx="50" cy="83.33" rx="6" ry="8"/><ellipse cx="83.33" cy="83.33" rx="6" ry="8"/></g>
+  <path d="M50 83.33V50" stroke="#c0392b" stroke-width="2" stroke-dasharray="3 2"/></svg>
+  <ol><li data-i18n="h1"></li><li data-i18n="h2"></li><li data-i18n="h3"></li><li data-i18n="h4"></li><li data-i18n="h5"></li></ol>
+  <button class="big" data-close data-i18n="close"></button>
+</div></div>
+
+<div class="modal" id="mRes" hidden><div class="card">
+  <h2 id="resT"></h2><p id="resP"></p>
+  <div class="row"><button class="big" id="resAgain" data-i18n="again"></button><button class="big" id="resMenu" data-i18n="menu"></button></div>
+</div></div>
+
+<div class="modal" id="mAd" hidden><div class="card">
+  <small data-i18n="ad"></small>
+  <div id="adSlot">Ad Slot</div>
+  <button class="big" id="adClose" disabled data-i18n="close"></button>
+</div></div>
+
+<script src="game.js"></script>
+</body>
+</html>

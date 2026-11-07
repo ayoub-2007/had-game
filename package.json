@@ -1,0 +1,9 @@
+{
+  "name": "alhad-game",
+  "version": "1.0.0",
+  "description": "Al-Hadd (Three Men's Morris) - online game with ELO",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": { "express": "^4.19.2", "socket.io": "^4.7.5" }
+}
