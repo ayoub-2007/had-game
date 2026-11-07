@@ -16,11 +16,11 @@ const outcome = (b, p) => isWin(b, p) ? 'line' : (!moves(b, 3 - p).length ? 'blo
 
 /* ---------- i18n ---------- */
 const I = {
-ar: { title:'الحَد', local:'لعب محلي', bot:'ضد الحاسوب', ranked:'أونلاين مصنّف', create:'إنشاء غرفة خاصة', join:'انضمام', code:'رمز الغرفة', name:'اسمك', lb:'المتصدرون', date:'نوى التمر', pebble:'الحصى', you:'أنت', opp:'الخصم', p1:'اللاعب 1 (نوى)', p2:'اللاعب 2 (حصى)', turn:'الدور: ', youturn:'دورك', oppturn:'دور الخصم', win:'🎉 فوز!', lose:'خسارة', pwin:'فاز اللاعب ', line:'بتكوين خط ثلاثي', block:'بحصار الخصم', time:'بنفاد الوقت', left:'بانسحاب الطرف الآخر', resign:'استسلام', menu:'القائمة', again:'العب مجدداً', help:'كيف تلعب', close:'إغلاق', ad:'إعلان', search:'جارٍ البحث عن خصم...', room:'رمز غرفتك (شاركه مع صديقك): ', noserver:'تعذر الاتصال بالخادم', cancel:'إلغاء', badroom:'الغرفة غير موجودة', elo:'تصنيفك: ',
+ar: { title:'الحَد', local:'لعب محلي', bot:'ضد الحاسوب', ranked:'أونلاين مصنّف', create:'إنشاء غرفة خاصة', join:'انضمام', code:'رمز الغرفة', name:'اسمك', lb:'المتصدرون', date:'نوى التمر', pebble:'الحصى', you:'أنت', opp:'الخصم', p1:'اللاعب 1 (نوى)', p2:'اللاعب 2 (حصى)', turn:'الدور: ', youturn:'دورك', oppturn:'دور الخصم', win:'🎉 فوز!', lose:'خسارة', pwin:'فاز اللاعب ', line:'بتكوين خط ثلاثي', block:'بحصار الخصم', time:'بنفاد الوقت', left:'بانسحاب الطرف الآخر', resign:'استسلام', menu:'القائمة', again:'العب مجدداً', help:'كيف تلعب', close:'إغلاق', ad:'إعلان', search:'جارٍ البحث عن خصم...', room:'رمز غرفتك (شاركه مع صديقك): ', noserver:'تعذر الاتصال بالخادم', cancel:'إلغاء', share:'مشاركة رابط الغرفة', copied:'تم نسخ الرابط', selfroom:'لا يمكنك الانضمام إلى غرفتك بنفسك', away:'الخصم منفصل مؤقتاً... بانتظار عودته', abort:'انتهت المباراة بلا نتيجة', abortmsg:'لم تُلعب جولة كافية، فلم يُحتسب فوز ولا تصنيف.', badroom:'الغرفة غير موجودة', elo:'تصنيفك: ',
   h1:'تبدأ القطع الست مصفوفة: نوى التمر أسفل، والحصى أعلى. الوسط فارغ.', h2:'في دورك حرّك قطعة واحدة إلى نقطة فارغة مجاورة على خط مباشر.', h3:'الفوز: صفّ قطعك الثلاث في خط (أفقي أو عمودي أو قطري).', h4:'تنبيه: اصطفاف قطعك في صفّ انطلاقك الأصلي لا يُحسب فوزاً.', h5:'من حوصرت كل قطعه أو نفد وقته (60 ثانية) خسر.' },
-en: { title:'Al-Hadd', local:'Pass & Play', bot:'Vs Computer', ranked:'Ranked Online', create:'Create private room', join:'Join', code:'Room code', name:'Your name', lb:'Leaderboard', date:'Date pits', pebble:'Pebbles', you:'You', opp:'Opponent', p1:'Player 1 (pits)', p2:'Player 2 (pebbles)', turn:'Turn: ', youturn:'Your turn', oppturn:"Opponent's turn", win:'🎉 You win!', lose:'You lose', pwin:'Winner: player ', line:'by making a line of three', block:'by blocking the opponent', time:'on time', left:'by opponent leaving', resign:'Resign', menu:'Menu', again:'Play again', help:'How to play', close:'Close', ad:'Ad', search:'Looking for an opponent...', room:'Your room code (share it): ', noserver:'Cannot reach the server', cancel:'Cancel', badroom:'Room not found', elo:'Your rating: ',
+en: { title:'Al-Hadd', local:'Pass & Play', bot:'Vs Computer', ranked:'Ranked Online', create:'Create private room', join:'Join', code:'Room code', name:'Your name', lb:'Leaderboard', date:'Date pits', pebble:'Pebbles', you:'You', opp:'Opponent', p1:'Player 1 (pits)', p2:'Player 2 (pebbles)', turn:'Turn: ', youturn:'Your turn', oppturn:"Opponent's turn", win:'🎉 You win!', lose:'You lose', pwin:'Winner: player ', line:'by making a line of three', block:'by blocking the opponent', time:'on time', left:'by opponent leaving', resign:'Resign', menu:'Menu', again:'Play again', help:'How to play', close:'Close', ad:'Ad', search:'Looking for an opponent...', room:'Your room code (share it): ', noserver:'Cannot reach the server', cancel:'Cancel', share:'Share room link', copied:'Link copied', selfroom:'You cannot join your own room', away:'Opponent disconnected... waiting for them', abort:'Match ended with no result', abortmsg:'Not enough moves were played, so no win or rating change.', badroom:'Room not found', elo:'Your rating: ',
   h1:'Six pieces start lined up: date pits at the bottom, pebbles on top. The middle row is empty.', h2:'On your turn, move one piece to an empty point connected by a line.', h3:'Win by lining up your three pieces (row, column or diagonal).', h4:'Careful: lining up on your own starting row does NOT count.', h5:'If all your pieces are blocked, or your 60 seconds run out, you lose.' },
-fr: { title:'Al-Hadd', local:'Local à deux', bot:'Contre l’ordinateur', ranked:'En ligne classé', create:'Créer un salon privé', join:'Rejoindre', code:'Code du salon', name:'Votre nom', lb:'Classement', date:'Noyaux', pebble:'Galets', you:'Vous', opp:'Adversaire', p1:'Joueur 1 (noyaux)', p2:'Joueur 2 (galets)', turn:'Tour : ', youturn:'À vous', oppturn:'Tour adverse', win:'🎉 Victoire !', lose:'Défaite', pwin:'Gagnant : joueur ', line:'en alignant trois pièces', block:'en bloquant l’adversaire', time:'au temps', left:'par abandon adverse', resign:'Abandonner', menu:'Menu', again:'Rejouer', help:'Règles', close:'Fermer', ad:'Publicité', search:'Recherche d’un adversaire...', room:'Code de votre salon (à partager) : ', noserver:'Serveur injoignable', cancel:'Annuler', badroom:'Salon introuvable', elo:'Votre classement : ',
+fr: { title:'Al-Hadd', local:'Local à deux', bot:'Contre l’ordinateur', ranked:'En ligne classé', create:'Créer un salon privé', join:'Rejoindre', code:'Code du salon', name:'Votre nom', lb:'Classement', date:'Noyaux', pebble:'Galets', you:'Vous', opp:'Adversaire', p1:'Joueur 1 (noyaux)', p2:'Joueur 2 (galets)', turn:'Tour : ', youturn:'À vous', oppturn:'Tour adverse', win:'🎉 Victoire !', lose:'Défaite', pwin:'Gagnant : joueur ', line:'en alignant trois pièces', block:'en bloquant l’adversaire', time:'au temps', left:'par abandon adverse', resign:'Abandonner', menu:'Menu', again:'Rejouer', help:'Règles', close:'Fermer', ad:'Publicité', search:'Recherche d’un adversaire...', room:'Code de votre salon (à partager) : ', noserver:'Serveur injoignable', cancel:'Annuler', share:'Partager le lien', copied:'Lien copié', selfroom:'Vous ne pouvez pas rejoindre votre propre salon', away:'Adversaire déconnecté... en attente', abort:'Partie sans résultat', abortmsg:'Pas assez de coups joués : aucune victoire ni changement de classement.', badroom:'Salon introuvable', elo:'Votre classement : ',
   h1:'Six pièces alignées au départ : noyaux en bas, galets en haut. La ligne centrale est vide.', h2:'À votre tour, déplacez une pièce vers un point vide relié par une ligne.', h3:'Gagnez en alignant vos trois pièces (ligne, colonne ou diagonale).', h4:'Attention : s’aligner sur sa ligne de départ ne compte pas.', h5:'Si toutes vos pièces sont bloquées ou si vos 60 secondes sont écoulées, vous perdez.' }
 };
 let lang = LS.get('lang', 'ar');
@@ -107,7 +107,7 @@ function render() {
   const opp = 3 - G.me, lbl = p => G.names ? G.names[p - 1] : (G.mode === 'local' ? t('p' + p) : (p === G.me ? t('you') : t('opp')));
   $('#ctop .who').textContent = lbl(opp); $('#cbot .who').textContent = lbl(G.me);
   updateClocks();
-  $('#status').textContent = G.over ? '' : (G.mode === 'local' ? t('turn') + t('p' + G.turn) : (G.turn === G.me ? t('youturn') : t('oppturn')));
+  $('#status').textContent = G.over ? '' : (G.away && G.away[opp - 1] ? t('away') : G.mode === 'local' ? t('turn') + t('p' + G.turn) : (G.turn === G.me ? t('youturn') : t('oppturn')));
   $('#gResign').hidden = G.mode === 'local';
 }
 function updateClocks() {
@@ -122,11 +122,15 @@ function canAct() {
 }
 function onCell(i) {
   Snd.init(); if (!canAct()) return;
-  if (G.board[i] === G.turn) { G.sel = G.sel === i ? null : i; Snd.play('select'); return render(); }
+  if (G.board[i] === G.turn) { G.sel = G.sel === i ? null : i; Snd.play('select'); return render(); }   // نقر على القطعة نفسها = إلغاء التحديد
   if (G.sel !== null && !G.board[i] && ADJ[G.sel].includes(i)) {
     const f = G.sel; G.sel = null;
-    if (G.mode === 'online') { sock.emit('move', { from: f, to: i }); render(); }
-    else applyLocal(f, i);
+    if (G.mode === 'online') {   // تحديث فوري محلي ثم إرسال النقلة للسيرفر في الخلفية
+      const nb = ap(G.board, f, i);
+      G.pending = { from: f, to: i, prev: G.board, board: nb, prevTurn: G.turn, at: Date.now() };
+      G.board = nb; G.turn = 3 - G.turn; G.lastSec = 0; Snd.play('place'); render();
+      sock.emit('move', { from: f, to: i });
+    } else applyLocal(f, i);
   }
 }
 function applyLocal(f, to) {
@@ -167,14 +171,15 @@ setInterval(() => {
 
 /* ---------- Result ---------- */
 function finish(winner, reason, elo) {
-  if (G.over) return; G.over = true; clearTimeout(botTimer); render();
-  const mine = G.mode === 'local' ? null : winner === G.me;
-  let title = G.mode === 'local' ? t('pwin') + winner : (mine ? t('win') : t('lose'));
-  let msg = G.mode === 'local' ? t(reason) : t(reason);
+  if (G.over) return; G.over = true; clearTimeout(botTimer); G.pending = null; render();
+  const aborted = !winner, mine = (G.mode === 'local' || aborted) ? null : winner === G.me;
+  let title, msg;
+  if (aborted) { title = t('abort'); msg = t('abortmsg'); }
+  else { title = G.mode === 'local' ? t('pwin') + winner : (mine ? t('win') : t('lose')); msg = t(reason); }
   if (elo) { const e = elo[G.me - 1]; msg += ' — ' + t('elo') + e.rating + ' (' + (e.delta >= 0 ? '+' : '') + e.delta + ')'; }
-  Snd.play(mine === false ? 'lose' : 'win');
+  if (!aborted) Snd.play(mine === false ? 'lose' : 'win');
   $('#resT').textContent = title; $('#resP').textContent = msg; $('#mRes').hidden = false;
-  if (G.mode !== 'local') Ads.record(!mine);
+  if (G.mode !== 'local' && !aborted) Ads.record(!mine);
   $('#resAgain').hidden = G.mode === 'online';
 }
 function afterResult(fn) { $('#mRes').hidden = true; Ads.maybeShow(fn); }
@@ -186,20 +191,46 @@ function connect(cb) {
   s.onload = () => { sock = SERVER_URL ? io(SERVER_URL) : io(); bind(); cb(); };
   s.onerror = () => alert(t('noserver')); document.head.appendChild(s);
 }
+let hadConn = false, roomLink = null;
+function rollback() {
+  if (G && G.pending) { G.board = G.pending.prev; G.turn = G.pending.prevTurn; G.pending = null; G.sel = null; render(); }
+}
 function bind() {
-  sock.on('waiting', d => { show('wait'); $('#waitMsg').textContent = d.code ? t('room') + d.code : t('search'); });
+  sock.on('connect', () => { if (hadConn) sock.emit('resume', ident()); hadConn = true; });
+  sock.on('gone', () => { if (!$('#wait').hidden) show('menu'); });
+  sock.on('waiting', d => {
+    show('wait'); $('#waitMsg').textContent = d.code ? t('room') + d.code : t('search');
+    roomLink = d.code ? location.origin + location.pathname + '?room=' + d.code : null; $('#wShare').hidden = !roomLink;
+  });
   sock.on('start', d => {
-    start('online', d.you, { names: d.names.map((n, i) => n + ' (' + d.elo[i] + ')'), board: d.state.board, turn: d.state.turn, times: d.state.times });
-    render();
+    start('online', d.you, { names: d.names.map((n, i) => n + ' (' + d.elo[i] + ')'), board: d.state.board, turn: d.state.turn, times: d.state.times, away: d.state.away });
   });
   sock.on('state', s => {
     if (!G || G.mode !== 'online') return;
-    const moved = s.board.join() !== G.board.join();
-    G.board = s.board; G.turn = s.turn; G.times = s.times; G.sel = null; G.lastSec = 0;
-    if (moved) Snd.play('place');
-    render(); if (s.winner) finish(s.winner, s.reason, s.elo);
+    const awayBefore = String(G.away); G.times = s.times; G.away = s.away || [false, false];
+    let accept = true; const p = G.pending;
+    if (p) {
+      if (s.board.join() === p.board.join()) G.pending = null;                                   // السيرفر أكّد نقلتي
+      else if (s.board.join() === p.prev.join() && Date.now() - p.at < 4000) accept = false;     // مزامنة قديمة سبقت نقلتي: تجاهلها
+      else G.pending = null;
+    }
+    let redraw = awayBefore !== String(G.away);
+    if (accept) {
+      const changed = s.board.join() !== G.board.join(), turnChanged = s.turn !== G.turn;
+      if (changed) Snd.play('place');
+      if (turnChanged) G.lastSec = 0;
+      G.board = s.board; G.turn = s.turn;
+      if (G.sel !== null && (G.board[G.sel] !== G.me || G.turn !== G.me)) G.sel = null;   // التحديد يبقى ما دام صالحاً
+      redraw = redraw || changed || turnChanged;
+    }
+    if (redraw) render(); else updateClocks();
+    if (s.over) finish(s.winner, s.reason, s.elo);
   });
-  sock.on('err', e => { if (e === 'room') alert(t('badroom')); });
+  sock.on('err', e => {
+    if (e === 'room') alert(t('badroom'));
+    else if (e === 'self') alert(t('selfroom'));
+    else rollback();
+  });
 }
 const ident = () => ({ name: myName(), pid });
 
@@ -237,3 +268,14 @@ setTheme(theme); Snd.setSfx(Snd.sfx); Snd.setMusic(Snd.music);
 $('#name').value = LS.get('name', ''); applyLang();
 if (LS.get('seenHelp', false) === false) { LS.set('seenHelp', true); $('#mHelp').hidden = false; }
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => {});
+
+$('#wShare').onclick = async () => {
+  if (!roomLink) return;
+  try { if (navigator.share) await navigator.share({ title: t('title'), url: roomLink }); else { await navigator.clipboard.writeText(roomLink); alert(t('copied')); } } catch (e) {}
+};
+document.addEventListener('visibilitychange', () => { if (!document.hidden && sock && !sock.connected) sock.connect(); });
+const roomParam = (new URLSearchParams(location.search).get('room') || '').toUpperCase().slice(0, 4);
+if (roomParam) {
+  $('#code').value = roomParam; history.replaceState(null, '', location.pathname);
+  connect(() => sock.emit('joinRoom', Object.assign(ident(), { code: roomParam })));
+}
