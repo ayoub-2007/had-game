@@ -7,6 +7,8 @@ const $ = s => document.querySelector(s);
 const LS = { get: (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
              set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
 
+let token = LS.get('token', null), me = null, cfg = null;   // حساب Google (me=null ⇒ ضيف)
+
 /* ---------- Rules ---------- */
 const startBoard = () => { const b = Array(9).fill(0); [6,7,8].forEach(i => b[i] = 1); [0,1,2].forEach(i => b[i] = 2); return b; };
 const moves = (b, p) => { const r = []; b.forEach((v, i) => { if (v === p) ADJ[i].forEach(j => { if (!b[j]) r.push([i, j]); }); }); return r; };
@@ -16,11 +18,11 @@ const outcome = (b, p) => isWin(b, p) ? 'line' : (!moves(b, 3 - p).length ? 'blo
 
 /* ---------- i18n ---------- */
 const I = {
-ar: { title:'الحَد', local:'لعب محلي', bot:'ضد الحاسوب', ranked:'أونلاين مصنّف', create:'إنشاء غرفة خاصة', join:'انضمام', code:'رمز الغرفة', name:'اسمك', lb:'المتصدرون', date:'نوى التمر', pebble:'الحصى', you:'أنت', opp:'الخصم', p1:'اللاعب 1 (نوى)', p2:'اللاعب 2 (حصى)', turn:'الدور: ', youturn:'دورك', oppturn:'دور الخصم', win:'🎉 فوز!', lose:'خسارة', pwin:'فاز اللاعب ', line:'بتكوين خط ثلاثي', block:'بحصار الخصم', time:'بنفاد الوقت', left:'بانسحاب الطرف الآخر', resign:'استسلام', menu:'القائمة', again:'العب مجدداً', help:'كيف تلعب', close:'إغلاق', ad:'إعلان', search:'جارٍ البحث عن خصم...', room:'رمز غرفتك (شاركه مع صديقك): ', noserver:'تعذر الاتصال بالخادم', cancel:'إلغاء', share:'مشاركة رابط الغرفة', copied:'تم نسخ الرابط', selfroom:'لا يمكنك الانضمام إلى غرفتك بنفسك', away:'الخصم منفصل مؤقتاً... بانتظار عودته', abort:'انتهت المباراة بلا نتيجة', abortmsg:'لم تُلعب جولة كافية، فلم يُحتسب فوز ولا تصنيف.', badroom:'الغرفة غير موجودة', elo:'تصنيفك: ',
+ar: { title:'الحَد', local:'لعب محلي', bot:'ضد الحاسوب', ranked:'أونلاين مصنّف', create:'إنشاء غرفة خاصة', join:'انضمام', code:'رمز الغرفة', name:'اسمك', lb:'المتصدرون', date:'نوى التمر', pebble:'الحصى', you:'أنت', opp:'الخصم', p1:'اللاعب 1 (نوى)', p2:'اللاعب 2 (حصى)', turn:'الدور: ', youturn:'دورك', oppturn:'دور الخصم', win:'🎉 فوز!', lose:'خسارة', pwin:'فاز اللاعب ', line:'بتكوين خط ثلاثي', block:'بحصار الخصم', time:'بنفاد الوقت', left:'بانسحاب الطرف الآخر', resign:'استسلام', menu:'القائمة', again:'العب مجدداً', help:'كيف تلعب', close:'إغلاق', ad:'إعلان', search:'جارٍ البحث عن خصم...', room:'رمز غرفتك (شاركه مع صديقك): ', noserver:'تعذر الاتصال بالخادم', cancel:'إلغاء', share:'مشاركة رابط الغرفة', copied:'تم نسخ الرابط', selfroom:'لا يمكنك الانضمام إلى غرفتك بنفسك', away:'الخصم منفصل مؤقتاً... بانتظار عودته', abort:'انتهت المباراة بلا نتيجة', abortmsg:'لم تُلعب جولة كافية، فلم يُحتسب فوز ولا تصنيف.', badroom:'الغرفة غير موجودة', logout:'خروج', guestnote:'سجّل بحساب Google لحفظ تصنيفك، أو العب كضيف بدون حفظ.', needlogin:'المباريات المصنفة تتطلب تسجيل الدخول بحساب Google.', autherr:'تعذر تسجيل الدخول، حاول مرة أخرى.', empty:'لا توجد نتائج بعد', elo:'تصنيفك: ',
   h1:'تبدأ القطع الست مصفوفة: نوى التمر أسفل، والحصى أعلى. الوسط فارغ.', h2:'في دورك حرّك قطعة واحدة إلى نقطة فارغة مجاورة على خط مباشر.', h3:'الفوز: صفّ قطعك الثلاث في خط (أفقي أو عمودي أو قطري).', h4:'تنبيه: اصطفاف قطعك في صفّ انطلاقك الأصلي لا يُحسب فوزاً.', h5:'من حوصرت كل قطعه أو نفد وقته (60 ثانية) خسر.' },
-en: { title:'Al-Hadd', local:'Pass & Play', bot:'Vs Computer', ranked:'Ranked Online', create:'Create private room', join:'Join', code:'Room code', name:'Your name', lb:'Leaderboard', date:'Date pits', pebble:'Pebbles', you:'You', opp:'Opponent', p1:'Player 1 (pits)', p2:'Player 2 (pebbles)', turn:'Turn: ', youturn:'Your turn', oppturn:"Opponent's turn", win:'🎉 You win!', lose:'You lose', pwin:'Winner: player ', line:'by making a line of three', block:'by blocking the opponent', time:'on time', left:'by opponent leaving', resign:'Resign', menu:'Menu', again:'Play again', help:'How to play', close:'Close', ad:'Ad', search:'Looking for an opponent...', room:'Your room code (share it): ', noserver:'Cannot reach the server', cancel:'Cancel', share:'Share room link', copied:'Link copied', selfroom:'You cannot join your own room', away:'Opponent disconnected... waiting for them', abort:'Match ended with no result', abortmsg:'Not enough moves were played, so no win or rating change.', badroom:'Room not found', elo:'Your rating: ',
+en: { title:'Al-Hadd', local:'Pass & Play', bot:'Vs Computer', ranked:'Ranked Online', create:'Create private room', join:'Join', code:'Room code', name:'Your name', lb:'Leaderboard', date:'Date pits', pebble:'Pebbles', you:'You', opp:'Opponent', p1:'Player 1 (pits)', p2:'Player 2 (pebbles)', turn:'Turn: ', youturn:'Your turn', oppturn:"Opponent's turn", win:'🎉 You win!', lose:'You lose', pwin:'Winner: player ', line:'by making a line of three', block:'by blocking the opponent', time:'on time', left:'by opponent leaving', resign:'Resign', menu:'Menu', again:'Play again', help:'How to play', close:'Close', ad:'Ad', search:'Looking for an opponent...', room:'Your room code (share it): ', noserver:'Cannot reach the server', cancel:'Cancel', share:'Share room link', copied:'Link copied', selfroom:'You cannot join your own room', away:'Opponent disconnected... waiting for them', abort:'Match ended with no result', abortmsg:'Not enough moves were played, so no win or rating change.', badroom:'Room not found', logout:'Sign out', guestnote:'Sign in with Google to save your rating, or play as a guest (nothing saved).', needlogin:'Ranked matches require signing in with Google.', autherr:'Sign-in failed, please try again.', empty:'No results yet', elo:'Your rating: ',
   h1:'Six pieces start lined up: date pits at the bottom, pebbles on top. The middle row is empty.', h2:'On your turn, move one piece to an empty point connected by a line.', h3:'Win by lining up your three pieces (row, column or diagonal).', h4:'Careful: lining up on your own starting row does NOT count.', h5:'If all your pieces are blocked, or your 60 seconds run out, you lose.' },
-fr: { title:'Al-Hadd', local:'Local à deux', bot:'Contre l’ordinateur', ranked:'En ligne classé', create:'Créer un salon privé', join:'Rejoindre', code:'Code du salon', name:'Votre nom', lb:'Classement', date:'Noyaux', pebble:'Galets', you:'Vous', opp:'Adversaire', p1:'Joueur 1 (noyaux)', p2:'Joueur 2 (galets)', turn:'Tour : ', youturn:'À vous', oppturn:'Tour adverse', win:'🎉 Victoire !', lose:'Défaite', pwin:'Gagnant : joueur ', line:'en alignant trois pièces', block:'en bloquant l’adversaire', time:'au temps', left:'par abandon adverse', resign:'Abandonner', menu:'Menu', again:'Rejouer', help:'Règles', close:'Fermer', ad:'Publicité', search:'Recherche d’un adversaire...', room:'Code de votre salon (à partager) : ', noserver:'Serveur injoignable', cancel:'Annuler', share:'Partager le lien', copied:'Lien copié', selfroom:'Vous ne pouvez pas rejoindre votre propre salon', away:'Adversaire déconnecté... en attente', abort:'Partie sans résultat', abortmsg:'Pas assez de coups joués : aucune victoire ni changement de classement.', badroom:'Salon introuvable', elo:'Votre classement : ',
+fr: { title:'Al-Hadd', local:'Local à deux', bot:'Contre l’ordinateur', ranked:'En ligne classé', create:'Créer un salon privé', join:'Rejoindre', code:'Code du salon', name:'Votre nom', lb:'Classement', date:'Noyaux', pebble:'Galets', you:'Vous', opp:'Adversaire', p1:'Joueur 1 (noyaux)', p2:'Joueur 2 (galets)', turn:'Tour : ', youturn:'À vous', oppturn:'Tour adverse', win:'🎉 Victoire !', lose:'Défaite', pwin:'Gagnant : joueur ', line:'en alignant trois pièces', block:'en bloquant l’adversaire', time:'au temps', left:'par abandon adverse', resign:'Abandonner', menu:'Menu', again:'Rejouer', help:'Règles', close:'Fermer', ad:'Publicité', search:'Recherche d’un adversaire...', room:'Code de votre salon (à partager) : ', noserver:'Serveur injoignable', cancel:'Annuler', share:'Partager le lien', copied:'Lien copié', selfroom:'Vous ne pouvez pas rejoindre votre propre salon', away:'Adversaire déconnecté... en attente', abort:'Partie sans résultat', abortmsg:'Pas assez de coups joués : aucune victoire ni changement de classement.', badroom:'Salon introuvable', logout:'Déconnexion', guestnote:'Connectez-vous avec Google pour sauvegarder votre classement, ou jouez en invité (rien n’est sauvegardé).', needlogin:'Les parties classées nécessitent une connexion Google.', autherr:'Échec de la connexion, réessayez.', empty:'Aucun résultat', elo:'Votre classement : ',
   h1:'Six pièces alignées au départ : noyaux en bas, galets en haut. La ligne centrale est vide.', h2:'À votre tour, déplacez une pièce vers un point vide relié par une ligne.', h3:'Gagnez en alignant vos trois pièces (ligne, colonne ou diagonale).', h4:'Attention : s’aligner sur sa ligne de départ ne compte pas.', h5:'Si toutes vos pièces sont bloquées ou si vos 60 secondes sont écoulées, vous perdez.' }
 };
 let lang = LS.get('lang', 'ar');
@@ -81,7 +83,7 @@ const Ads = {
 
 /* ---------- State & helpers ---------- */
 let G = null, sock = null, botTimer = null, pending = null;
-const show = id => ['menu', 'game', 'lbox', 'wait'].forEach(s => $('#' + s).hidden = s !== id);
+const show = id => ['menu', 'game', 'wait'].forEach(s => $('#' + s).hidden = s !== id);
 const fmt = s => { s = Math.ceil(Math.max(0, s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 const myName = () => { const n = $('#name').value.trim().slice(0, 16) || (lang === 'ar' ? 'لاعب' : 'Player'); LS.set('name', n); return n; };
 let pid = LS.get('pid', null); if (!pid) { pid = Math.random().toString(36).slice(2) + Date.now().toString(36); LS.set('pid', pid); }
@@ -93,16 +95,22 @@ function start(mode, me, extra) {
   if (mode === 'bot' && me !== 1) botTurn();
 }
 
+let cells = null;
+function buildBoard() {   // تُبنى الخانات مرة واحدة فقط ولا تُحذف عند كل تحديث
+  const B = $('#board'); B.querySelectorAll('.cell').forEach(e => e.remove()); cells = [];
+  for (let i = 0; i < 9; i++) { const c = document.createElement('button'); c.className = 'cell'; c.onclick = () => onCell(i); B.appendChild(c); cells.push(c); }
+}
 function render() {
-  const B = $('#board'); B.querySelectorAll('.cell').forEach(e => e.remove());
+  if (!cells) buildBoard();
   const flip = G.me === 2;
   for (let i = 0; i < 9; i++) {
-    const d = flip ? 8 - i : i, c = document.createElement('button'), v = G.board[i];
-    c.className = 'cell'; c.style.left = (16.67 + 33.33 * (d % 3)) + '%'; c.style.top = (16.67 + 33.33 * Math.floor(d / 3)) + '%';
-    if (v) { const s = document.createElement('i'); s.className = 'pc p' + v; c.appendChild(s); }
-    if (G.sel === i) c.classList.add('sel');
-    if (G.sel !== null && !v && ADJ[G.sel].includes(i)) c.classList.add('hint');
-    c.onclick = () => onCell(i); B.appendChild(c);
+    const c = cells[i], d = flip ? 8 - i : i, v = G.board[i];
+    c.style.left = (16.67 + 33.33 * (d % 3)) + '%'; c.style.top = (16.67 + 33.33 * Math.floor(d / 3)) + '%';
+    let pc = c.firstChild;
+    if (v) { if (!pc) { pc = document.createElement('i'); c.appendChild(pc); } const cls = 'pc p' + v; if (pc.className !== cls) pc.className = cls; }
+    else if (pc) pc.remove();
+    c.classList.toggle('sel', G.sel === i);
+    c.classList.toggle('hint', G.sel !== null && !v && ADJ[G.sel].includes(i));
   }
   const opp = 3 - G.me, lbl = p => G.names ? G.names[p - 1] : (G.mode === 'local' ? t('p' + p) : (p === G.me ? t('you') : t('opp')));
   $('#ctop .who').textContent = lbl(opp); $('#cbot .who').textContent = lbl(G.me);
@@ -176,7 +184,7 @@ function finish(winner, reason, elo) {
   let title, msg;
   if (aborted) { title = t('abort'); msg = t('abortmsg'); }
   else { title = G.mode === 'local' ? t('pwin') + winner : (mine ? t('win') : t('lose')); msg = t(reason); }
-  if (elo) { const e = elo[G.me - 1]; msg += ' — ' + t('elo') + e.rating + ' (' + (e.delta >= 0 ? '+' : '') + e.delta + ')'; }
+  if (elo) { const e = elo[G.me - 1]; if (me) { me.elo = e.rating; renderAcc(); } msg += ' — ' + t('elo') + e.rating + ' (' + (e.delta >= 0 ? '+' : '') + e.delta + ')'; }
   if (!aborted) Snd.play(mine === false ? 'lose' : 'win');
   $('#resT').textContent = title; $('#resP').textContent = msg; $('#mRes').hidden = false;
   if (G.mode !== 'local' && !aborted) Ads.record(!mine);
@@ -187,9 +195,31 @@ function afterResult(fn) { $('#mRes').hidden = true; Ads.maybeShow(fn); }
 /* ---------- Online ---------- */
 function connect(cb) {
   if (sock) return cb();
+  const go = () => { sock = io(SERVER_URL || undefined, { auth: done => done({ token }) }); bind(); cb(); };   // التوكن يُرسل في كل اتصال وإعادة اتصال
+  if (window.io) return go();
   const s = document.createElement('script'); s.src = SERVER_URL + '/socket.io/socket.io.js';
-  s.onload = () => { sock = SERVER_URL ? io(SERVER_URL) : io(); bind(); cb(); };
-  s.onerror = () => alert(t('noserver')); document.head.appendChild(s);
+  s.onload = go; s.onerror = () => alert(t('noserver')); document.head.appendChild(s);
+}
+function applyServerState(s) {
+  if (!G || G.mode !== 'online') return;
+  const awayBefore = String(G.away); G.times = s.times; G.away = s.away || [false, false];
+  let accept = true; const p = G.pending;
+  if (p) {
+    if (s.board.join() === p.board.join()) G.pending = null;                                   // السيرفر أكّد نقلتي
+    else if (s.board.join() === p.prev.join() && Date.now() - p.at < 4000) accept = false;     // مزامنة قديمة سبقت نقلتي: تجاهلها
+    else G.pending = null;
+  }
+  let redraw = awayBefore !== String(G.away);
+  if (accept) {
+    const changed = s.board.join() !== G.board.join(), turnChanged = s.turn !== G.turn;
+    if (changed) Snd.play('place');
+    if (turnChanged) G.lastSec = 0;
+    G.board = s.board; G.turn = s.turn;
+    if (G.sel !== null && G.board[G.sel] !== G.me) G.sel = null;   // التحديد يبقى ما دام القطعة قطعتي
+    redraw = redraw || changed || turnChanged;
+  }
+  if (redraw) render(); else updateClocks();
+  if (s.over) finish(s.winner, s.reason, s.elo);
 }
 let hadConn = false, roomLink = null;
 function rollback() {
@@ -203,52 +233,44 @@ function bind() {
     roomLink = d.code ? location.origin + location.pathname + '?room=' + d.code : null; $('#wShare').hidden = !roomLink;
   });
   sock.on('start', d => {
-    start('online', d.you, { names: d.names.map((n, i) => n + ' (' + d.elo[i] + ')'), board: d.state.board, turn: d.state.turn, times: d.state.times, away: d.state.away });
+    if (G && G.mode === 'online' && G.gid === d.gid && !G.over) { applyServerState(d.state); return; }   // استئناف نفس المباراة: مزامنة فقط دون إعادة تهيئة
+    start('online', d.you, { gid: d.gid, names: d.names.map((n, i) => n + (d.elo ? ' (' + d.elo[i] + ')' : '')), board: d.state.board, turn: d.state.turn, times: d.state.times, away: d.state.away });
   });
-  sock.on('state', s => {
-    if (!G || G.mode !== 'online') return;
-    const awayBefore = String(G.away); G.times = s.times; G.away = s.away || [false, false];
-    let accept = true; const p = G.pending;
-    if (p) {
-      if (s.board.join() === p.board.join()) G.pending = null;                                   // السيرفر أكّد نقلتي
-      else if (s.board.join() === p.prev.join() && Date.now() - p.at < 4000) accept = false;     // مزامنة قديمة سبقت نقلتي: تجاهلها
-      else G.pending = null;
-    }
-    let redraw = awayBefore !== String(G.away);
-    if (accept) {
-      const changed = s.board.join() !== G.board.join(), turnChanged = s.turn !== G.turn;
-      if (changed) Snd.play('place');
-      if (turnChanged) G.lastSec = 0;
-      G.board = s.board; G.turn = s.turn;
-      if (G.sel !== null && (G.board[G.sel] !== G.me || G.turn !== G.me)) G.sel = null;   // التحديد يبقى ما دام صالحاً
-      redraw = redraw || changed || turnChanged;
-    }
-    if (redraw) render(); else updateClocks();
-    if (s.over) finish(s.winner, s.reason, s.elo);
-  });
+  sock.on('state', applyServerState);
   sock.on('err', e => {
     if (e === 'room') alert(t('badroom'));
     else if (e === 'self') alert(t('selfroom'));
+    else if (e === 'login') alert(t('needlogin'));
     else rollback();
   });
 }
 const ident = () => ({ name: myName(), pid });
 
 async function loadLb() {
-  show('lbox'); const ol = $('#lbList'); ol.innerHTML = '';
+  $('#mBoard').hidden = false; const ol = $('#lbList'); ol.innerHTML = '';
+  const msg = k => { const li = document.createElement('li'); li.textContent = t(k); li.style.display = 'block'; ol.appendChild(li); };
   try {
-    const r = await fetch(SERVER_URL + '/api/leaderboard'); const d = await r.json();
-    d.forEach(p => { const li = document.createElement('li'); li.textContent = p.name + ' — ' + p.elo + '  (' + p.w + '/' + p.l + ')'; ol.appendChild(li); });
-  } catch (e) { const li = document.createElement('li'); li.textContent = t('noserver'); ol.appendChild(li); }
+    const d = await (await fetch(SERVER_URL + '/api/leaderboard')).json();
+    if (!d.length) return msg('empty');
+    d.forEach((p, i) => {
+      const li = document.createElement('li'); if (me && me.id === p.id) li.className = 'me';
+      const r = document.createElement('b'); r.textContent = i + 1;
+      const im = document.createElement('img'); im.alt = ''; im.referrerPolicy = 'no-referrer'; if (p.avatar) im.src = p.avatar;
+      const nm = document.createElement('div'); nm.className = 'nm'; nm.textContent = p.name;
+      const w = document.createElement('small'); w.textContent = p.wins + ' / ' + p.losses; nm.appendChild(w);
+      const e = document.createElement('b'); e.textContent = p.elo;
+      li.append(r, im, nm, e); ol.appendChild(li);
+    });
+  } catch (err) { msg('noserver'); }
 }
 
 /* ---------- Wiring ---------- */
 $('#mLocal').onclick = () => start('local', 1);
 $('#mBot').onclick = () => start('bot', +$('#pick').value);
-$('#mRank').onclick = () => connect(() => sock.emit('queue', ident()));
+$('#mRank').onclick = () => { if (!me) return alert(t('needlogin')); connect(() => sock.emit('queue', ident())); };
 $('#mCreate').onclick = () => connect(() => sock.emit('createRoom', ident()));
 $('#mJoin').onclick = () => { const c = $('#code').value.trim(); if (c) connect(() => sock.emit('joinRoom', Object.assign(ident(), { code: c }))); };
-$('#mLb').onclick = loadLb;
+$('#bLb').onclick = loadLb;
 $('#wCancel').onclick = () => { if (sock) sock.emit('cancel'); show('menu'); };
 document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => show('menu'));
 document.querySelectorAll('[data-close]').forEach(b => b.onclick = () => b.closest('.modal').hidden = true);
@@ -279,3 +301,45 @@ if (roomParam) {
   $('#code').value = roomParam; history.replaceState(null, '', location.pathname);
   connect(() => sock.emit('joinRoom', Object.assign(ident(), { code: roomParam })));
 }
+
+/* ---------- Google account ---------- */
+function resetSock() { if (sock) { sock.disconnect(); sock = null; hadConn = false; } }
+function renderAcc() {
+  $('#acc').hidden = !me; $('#nameRow') && ($('#nameRow').hidden = !!me);
+  $('#name').hidden = !!me; $('#guestNote').hidden = !!me;
+  $('#gsiBox').hidden = !!me || !(cfg && cfg.googleClientId);
+  if (me) {
+    $('#accName').textContent = me.name; $('#accElo').textContent = 'ELO ' + me.elo + ' · ' + me.wins + '/' + me.losses;
+    const im = $('#accAvatar'); im.hidden = !me.avatar; if (me.avatar) im.src = me.avatar;
+  }
+}
+async function onGoogle(resp) {
+  try {
+    const r = await fetch(SERVER_URL + '/api/auth/google', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ credential: resp.credential }) });
+    if (!r.ok) throw new Error('auth');
+    const d = await r.json(); token = d.token; me = d.user; LS.set('token', token); resetSock(); renderAcc();
+  } catch (e) { alert(t('autherr')); }
+}
+function logout() {
+  token = null; me = null; LS.set('token', null); resetSock(); renderAcc();
+  if (window.google && google.accounts) google.accounts.id.disableAutoSelect();
+}
+$('#bLogout').onclick = logout;
+function loadGsi() {
+  const sc = document.createElement('script'); sc.src = 'https://accounts.google.com/gsi/client'; sc.async = true;
+  sc.onload = () => {
+    google.accounts.id.initialize({ client_id: cfg.googleClientId, callback: onGoogle });
+    google.accounts.id.renderButton($('#gsiBox'), { theme: 'outline', size: 'large', shape: 'pill', text: 'signin_with', width: 260 });
+  };
+  document.head.appendChild(sc);
+}
+(async () => {
+  try { cfg = await (await fetch(SERVER_URL + '/api/config')).json(); } catch (e) { cfg = null; }
+  if (token) {
+    try {
+      const r = await fetch(SERVER_URL + '/api/me', { headers: { Authorization: 'Bearer ' + token } });
+      if (r.ok) me = await r.json(); else { token = null; LS.set('token', null); }
+    } catch (e) { /* بلا اتصال: ابقَ كضيف مؤقتاً مع الاحتفاظ بالتوكن */ }
+  }
+  renderAcc(); if (cfg && cfg.googleClientId) loadGsi();
+})();

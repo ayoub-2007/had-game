@@ -21,20 +21,27 @@
   </div>
 </header>
 <main>
-  <section id="menu">
+  <section id="menu" class="panel">
+    <div class="acc" id="acc" hidden>
+      <img id="accAvatar" alt="" referrerpolicy="no-referrer">
+      <div class="accInfo"><b id="accName"></b><span id="accElo"></span></div>
+      <button id="bLogout" data-i18n="logout"></button>
+    </div>
+    <div id="gsiBox" hidden></div>
+    <p class="hint" id="guestNote" data-i18n="guestnote"></p>
     <input id="name" maxlength="16" data-i18n-ph="name" autocomplete="off">
+    <button class="big acc2" id="mRank" data-i18n="ranked"></button>
     <button class="big" id="mLocal" data-i18n="local"></button>
     <div class="row">
       <button class="big" id="mBot" data-i18n="bot"></button>
       <select id="pick"><option value="1" data-i18n="date"></option><option value="2" data-i18n="pebble"></option></select>
     </div>
-    <button class="big acc" id="mRank" data-i18n="ranked"></button>
     <button class="big" id="mCreate" data-i18n="create"></button>
     <div class="row">
       <input id="code" maxlength="4" data-i18n-ph="code" autocomplete="off">
       <button class="big" id="mJoin" data-i18n="join"></button>
     </div>
-    <button class="big" id="mLb" data-i18n="lb"></button>
+    <button class="big" id="bLb" data-i18n="lb"></button>
   </section>
 
   <section id="game" hidden>
@@ -48,13 +55,10 @@
     <div class="row"><button id="gResign" data-i18n="resign"></button><button id="gMenu" data-i18n="menu"></button></div>
   </section>
 
-  <section id="lbox" hidden>
-    <h2 data-i18n="lb"></h2><ol id="lbList"></ol>
-    <button class="big" data-back data-i18n="menu"></button>
-  </section>
-
-  <section id="wait" hidden>
-    <p id="waitMsg"></p><button class="big acc" id="wShare" hidden data-i18n="share"></button><button class="big" id="wCancel" data-i18n="cancel"></button>
+  <section id="wait" class="panel" hidden>
+    <p id="waitMsg"></p>
+    <button class="big acc2" id="wShare" hidden data-i18n="share"></button>
+    <button class="big" id="wCancel" data-i18n="cancel"></button>
   </section>
 </main>
 
@@ -65,6 +69,12 @@
   <g fill="#6b3f1d"><ellipse cx="16.67" cy="83.33" rx="6" ry="8"/><ellipse cx="50" cy="83.33" rx="6" ry="8"/><ellipse cx="83.33" cy="83.33" rx="6" ry="8"/></g>
   <path d="M50 83.33V50" stroke="#c0392b" stroke-width="2" stroke-dasharray="3 2"/></svg>
   <ol><li data-i18n="h1"></li><li data-i18n="h2"></li><li data-i18n="h3"></li><li data-i18n="h4"></li><li data-i18n="h5"></li></ol>
+  <button class="big" data-close data-i18n="close"></button>
+</div></div>
+
+<div class="modal" id="mBoard" hidden><div class="card">
+  <h2 data-i18n="lb"></h2>
+  <ol id="lbList"></ol>
   <button class="big" data-close data-i18n="close"></button>
 </div></div>
 

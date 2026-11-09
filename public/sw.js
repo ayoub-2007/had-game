@@ -1,4 +1,4 @@
-const C = 'alhad-v2', F = ['./', 'index.html', 'style.css', 'game.js', 'manifest.json', 'icon.svg'];
+const C = 'alhad-v4', F = ['./', 'index.html', 'style.css', 'game.js', 'manifest.json', 'icon.svg'];
 self.addEventListener('install', e => e.waitUntil(caches.open(C).then(c => c.addAll(F)).then(() => self.skipWaiting())));
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== C).map(x => caches.delete(x)))).then(() => clients.claim())));
 self.addEventListener('fetch', e => {
