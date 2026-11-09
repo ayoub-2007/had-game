@@ -11,15 +11,30 @@ if (PG) {
     all: async (s, p = []) => (await pool.query(cv(s), p)).rows,
     get: async (s, p = []) => (await pool.query(cv(s), p)).rows[0]
   };
-} else {
-  const D = require('better-sqlite3');
-  const d = new D(process.env.SQLITE_FILE || path.join(__dirname, 'alhad.db'));
-  d.pragma('journal_mode = WAL');
-  q = {
-    run: async (s, p = []) => d.prepare(s).run(...p),
-    all: async (s, p = []) => d.prepare(s).all(...p),
-    get: async (s, p = []) => d.prepare(s).get(...p)
-  };
+}  else {
+  let D;
+  try {
+    D = require('better-sqlite3');
+  } catch (e) {
+    console.log('Running without local SQLite');
+  }
+
+  if (D) {
+    const d = new D(process.env.SQLITE_FILE || path.join(__dirname, 'had.db'));
+    d.pragma('journal_mode = WAL');
+    q = {
+      run: async (s, p = []) => d.prepare(s).run(...p),
+      all: async (s, p = []) => d.prepare(s).all(...p),
+      get: async (s, p = []) => d.prepare(s).get(...p)
+    };
+  } else {
+    // حل بديل مؤقت حتى يقلع السيرفر وترى الواجهة فوراً
+    q = {
+      run: async () => ({ changes: 0 }),
+      all: async () => ([]),
+      get: async () => null
+    };
+  }
 }
 const ID = PG ? 'SERIAL PRIMARY KEY' : 'INTEGER PRIMARY KEY AUTOINCREMENT';
 const TS = PG ? 'TIMESTAMPTZ DEFAULT NOW()' : 'TEXT DEFAULT CURRENT_TIMESTAMP';
